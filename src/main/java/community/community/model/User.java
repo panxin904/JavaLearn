@@ -3,7 +3,7 @@ package community.community.model;
 /**
  * Created by Coder on 2023/9/22 & 13:07.
  **/
-public class Users {
+public class User {
     private Integer id;
     private String name;
     private String accountId;

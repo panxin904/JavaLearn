@@ -2,8 +2,8 @@ package community.community.controller;
 
 import community.community.dto.AccessTokenDTO;
 import community.community.dto.GithubUser;
-import community.community.mapper.UsersMapper;
-import community.community.model.Users;
+import community.community.mapper.UserMapper;
+import community.community.model.User;
 import community.community.provider.GithubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +29,7 @@ public class OAuthorizeController {
     @Value("${github.redirect.uri}")
     private String redirect_uri;
     @Autowired
-    private UsersMapper usersMapper;
+    private UserMapper userMapper;
     @GetMapping("/callback")
     public String callback(@RequestParam(name="code") String code,
                            @RequestParam(name="state") String state,
@@ -43,14 +43,14 @@ public class OAuthorizeController {
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
         GithubUser githubUser = githubProvider.getUser(accessToken);
         if (githubUser != null){
-            Users users = new Users();
+            User user = new User();
             String token = UUID.randomUUID().toString();
-            users.setToken(token);
-            users.setName(githubUser.getName());
-            users.setAccountId(String.valueOf(githubUser.getId()));
-            users.setGmtCreate(System.currentTimeMillis());
-            users.setGmtModified(users.getGmtCreate());
-            usersMapper.insert(users);
+            user.setToken(token);
+            user.setName(githubUser.getName());
+            user.setAccountId(String.valueOf(githubUser.getId()));
+            user.setGmtCreate(System.currentTimeMillis());
+            user.setGmtModified(user.getGmtCreate());
+            userMapper.insert(user);
             //登陆成功，写入cookie和session
             response.addCookie(new Cookie("token", token));
             return "redirect:/";
