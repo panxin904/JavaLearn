@@ -69,6 +69,16 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.9</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.ucloud.ufile</groupId>
+			<artifactId>ufile-client-java</artifactId>
+			<version>2.1.1</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -89,6 +99,22 @@
 					<url>jdbc:h2:~/community;NON_KEYWORDS=USER</url>
 					<user>root</user>
 					<password>admin</password>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>com.h2database</groupId>
+						<artifactId>h2</artifactId>
+						<version>2.1.210</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.mybatis.generator</groupId>
+				<artifactId>mybatis-generator-maven-plugin</artifactId>
+				<version>1.4.2</version>
+				<configuration>
+					<overwrite>true</overwrite>
+					<configurationFile>${basedir}/target/classes/mybatis-generator-config.xml</configurationFile>
 				</configuration>
 				<dependencies>
 					<dependency>
