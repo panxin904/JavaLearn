@@ -6,6 +6,7 @@ import community.community.mapper.UserMapper;
 import community.community.model.User;
 import community.community.provider.GithubProvider;
 import community.community.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ import java.util.UUID;
  * Created by Coder on 2023/9/14$ & 21:26$.
  **/
 @Controller //路由承载者
+@Slf4j
 public class OAuthorizeController {
     @Autowired // 告诉Spring容器自动加载到当前实例中
     private GithubProvider githubProvider;
@@ -56,9 +58,11 @@ public class OAuthorizeController {
             userService.createOrUpdate(user);
             //登陆成功，写入cookie和session
             response.addCookie(new Cookie("token", token));
+            log.info("Github User Login: {}", githubUser.getName());
             return "redirect:/";
         }else {
             //登陆失败，重新登陆
+            log.error("callback get github error, {}", githubUser);
             return "redirect:/";
         }
     }
