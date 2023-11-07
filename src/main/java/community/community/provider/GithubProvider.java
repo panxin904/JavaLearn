@@ -3,6 +3,7 @@ package community.community.provider;
 import com.alibaba.fastjson.JSON;
 import community.community.dto.AccessTokenDTO;
 import community.community.dto.GithubUser;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ import java.util.concurrent.TimeUnit;
  * Created by Coder on 2023/9/17 & 19:25.
  **/
 @Component // 将类初始化到Spring容器的上下文，用Spring容器管理对象的创建
+@Slf4j
 public class GithubProvider {
     //通过认证后获取AcrossToken
     public String getAccessToken(AccessTokenDTO accessTokenDTO){
@@ -29,6 +31,7 @@ public class GithubProvider {
             String token = string1.split("&")[0].split("=")[1];
             return token;
         } catch (Exception e) {
+            log.error("Token Error: {}", e.getMessage());
             e.printStackTrace();
         }
         return null;

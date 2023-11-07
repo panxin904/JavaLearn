@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import community.community.dto.ResultDTO;
 import community.community.exception.CustomizeErrorCode;
 import community.community.exception.CustomizeException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,6 +20,7 @@ import java.io.PrintWriter;
  * Created by Coder on 2023/10/10 & 9:04.
  **/
 @ControllerAdvice
+@Slf4j
 public class CustomizeAdviceController {
     @ExceptionHandler(Exception.class)
     ModelAndView handleControllerException(Model model, HttpServletRequest request, Throwable ex,
@@ -47,7 +49,8 @@ public class CustomizeAdviceController {
             if (ex instanceof CustomizeException) {
                 model.addAttribute("message", ex.getMessage());
             } else {
-                model.addAttribute("message", CustomizeErrorCode.SYS_ERROR);
+                log.error("System Error: {}", ex.getMessage());
+                model.addAttribute("message", CustomizeErrorCode.SYS_ERROR.getMessage());
             }
             return new ModelAndView("error");
         }

@@ -62,7 +62,6 @@ public class OAuthorizeController {
             return "redirect:/";
         }else {
             //登陆失败，重新登陆
-            log.error("callback get github error, {}", githubUser);
             return "redirect:/";
         }
     }
