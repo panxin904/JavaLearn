@@ -58,10 +58,10 @@ public class OAuthorizeController {
             userService.createOrUpdate(user);
             //登陆成功，写入cookie和session
             response.addCookie(new Cookie("token", token));
-            log.info("Github User Login: {}", githubUser.getName());
             return "redirect:/";
         }else {
             //登陆失败，重新登陆
+            log.error("Github User Login: {}", githubUser);
             return "redirect:/";
         }
     }
