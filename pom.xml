@@ -104,7 +104,7 @@
 				<configuration>
 					<url>jdbc:mysql://172.17.0.12:3306/community</url>
 					<user>root</user>
-					<password>admin</password>
+					<password>px0904PX</password>
 				</configuration>
 				<dependencies>
 					<dependency>
