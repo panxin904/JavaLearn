@@ -11,6 +11,7 @@ import community.community.mapper.UserMapper;
 import community.community.model.Question;
 import community.community.model.QuestionExample;
 import community.community.model.User;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
  * Created by Coder on 2023/9/25 & 21:07.
  **/
 @Service
+@Slf4j
 public class QuestionService {
     @Autowired
     private QuestionMapper questionMapper;
@@ -135,6 +137,7 @@ public class QuestionService {
             question.setViewCount(0);
             question.setLikeCount(0);
             question.setCommentCount(0);
+            log.info("create question id: {}", question.getCreator());
             questionMapper.insertSelective(question);
         } else {
             // 更新

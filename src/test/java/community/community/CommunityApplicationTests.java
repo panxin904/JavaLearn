@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CommunityApplicationTests {
+public class CommunityApplicationTests {
 
 	@Test
 	void contextLoads() {
