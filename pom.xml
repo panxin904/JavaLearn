@@ -85,11 +85,11 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<fork>true</fork>  <!--dev-tools相关-->
-					<skip>true</skip>   <!--否则模块打包时候会提示 unable to find main class-->
-					<addResources>true</addResources>
-				</configuration>
+<!--				<configuration>-->
+<!--					<fork>true</fork>  &lt;!&ndash;dev-tools相关&ndash;&gt;-->
+<!--					<skip>true</skip>   &lt;!&ndash;否则模块打包时候会提示 unable to find main class&ndash;&gt;-->
+<!--					<addResources>true</addResources>-->
+<!--				</configuration>-->
 			</plugin>
 			<plugin>
 				<groupId>org.flywaydb</groupId>

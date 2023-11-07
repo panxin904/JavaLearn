@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class CommunityApplicationTests {
 
 	@Test
-	void contextLoads() {
+	public void contextLoads() {
 	}
 
 }
