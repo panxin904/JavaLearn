@@ -6,6 +6,7 @@ import community.community.dto.GithubUser;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -16,8 +17,21 @@ import java.util.concurrent.TimeUnit;
 @Component // 将类初始化到Spring容器的上下文，用Spring容器管理对象的创建
 @Slf4j
 public class GithubProvider {
+    @Value("${github.client.id}")
+    private String clientId;
+
+    @Value("${github.client.secret}")
+    private String clientSecret;
+
+    @Value("${github.redirect.uri}")
+    private String redirectUri;
+
     //通过认证后获取AcrossToken
     public String getAccessToken(AccessTokenDTO accessTokenDTO){
+        accessTokenDTO.setClient_id(clientId);
+        accessTokenDTO.setClient_secret(clientSecret);
+        accessTokenDTO.setRedirect_uri(redirectUri);
+
         MediaType mediaType = MediaType.get("application/json; charset=utf-8");
         OkHttpClient client = new OkHttpClient.Builder().connectTimeout(500000L, TimeUnit.MILLISECONDS).readTimeout(500000L, TimeUnit.MILLISECONDS).build();
 
