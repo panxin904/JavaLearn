@@ -2,7 +2,6 @@ package community.community.controller;
 
 import community.community.dto.FileDTO;
 import community.community.provider.UCloudProvider;
-import community.community.provider.UFileResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,17 +28,14 @@ public class FileController {
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         MultipartFile file = multipartRequest.getFile("editormd-image-file");
         try {
-            UFileResult uFileResult = uCloudProvider.upload(file.getInputStream(), file.getContentType(), file.getOriginalFilename());
+            String fileName = uCloudProvider.upload(file.getInputStream(), file.getContentType(), file.getOriginalFilename());
+            log.info("Image Upload filename: {}", fileName);
             FileDTO fileDTO = new FileDTO();
+            fileDTO.setUrl(fileName);
             fileDTO.setSuccess(1);
-            fileDTO.setUrl(uFileResult.getFileUrl());
             return fileDTO;
-        } catch (Exception e) {
-            log.error("upload error", e);
-            FileDTO fileDTO = new FileDTO();
-            fileDTO.setSuccess(0);
-            fileDTO.setMessage("上传失败");
-            return fileDTO;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
