@@ -41,10 +41,7 @@ public class OAuthorizeController {
                            @RequestParam(name="state") String state,
                            HttpServletResponse response){
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
-        accessTokenDTO.setClient_id(client_id);
-        accessTokenDTO.setClient_secret(client_secret);
         accessTokenDTO.setCode(code);
-        accessTokenDTO.setRedirect_uri(redirect_uri);
         accessTokenDTO.setState(state);
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
         GithubUser githubUser = githubProvider.getUser(accessToken);
@@ -56,8 +53,12 @@ public class OAuthorizeController {
             user.setAccountId(String.valueOf(githubUser.getId()));
             user.setAvatarUrl(githubUser.getAvatarUrl());
             userService.createOrUpdate(user);
-            //登陆成功，写入cookie和session
-            response.addCookie(new Cookie("token", token));
+            // 登陆成功，写入cookie和session
+            Cookie cookie = new Cookie("token", token);
+            cookie.setMaxAge(60 * 60 * 24 * 30 * 6);
+            // 修复 session 过期时间很短问题
+            cookie.setPath("/");
+            response.addCookie(cookie);
             return "redirect:/";
         }else {
             //登陆失败，重新登陆

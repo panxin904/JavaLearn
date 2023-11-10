@@ -3,6 +3,7 @@ package community.community.service;
 import community.community.dto.PaginationDTO;
 import community.community.dto.QuestionDTO;
 import community.community.dto.QuestionQueryDTO;
+import community.community.enums.SortEnum;
 import community.community.exception.CustomizeErrorCode;
 import community.community.exception.CustomizeException;
 import community.community.mapper.QuestionExtMapper;
@@ -36,13 +37,43 @@ public class QuestionService {
     @Autowired
     private QuestionExtMapper questionExtMapper;
 
-    public PaginationDTO list(String search, String tag, Integer page, Integer size) {
+    public PaginationDTO list(String search, String tag, String sort, Integer page, Integer size) {
+//        if (StringUtils.isNotBlank(search)) {
+//            String[] tags =StringUtils.split(search, " ");
+//            search = Arrays.stream(tags).collect(Collectors.joining("|"));
+//        }
+        // 修复因为*和+号产生的搜索异常问题
         if (StringUtils.isNotBlank(search)) {
-            String[] tags =StringUtils.split(search, " ");
-            search = Arrays.stream(tags).collect(Collectors.joining("|"));
+            String[] tags = StringUtils.split(search, " ");
+            search = Arrays
+                    .stream(tags)
+                    .filter(StringUtils::isNotBlank)
+                    .map(t -> t.replace("+", "").replace("*", "").replace("?", ""))
+                    .filter(StringUtils::isNotBlank)
+                    .collect(Collectors.joining("|"));
         }
 
         QuestionQueryDTO questionQueryDTO = new QuestionQueryDTO();
+        questionQueryDTO.setSearch(search);
+        if (StringUtils.isNotBlank(tag)) {
+            tag = tag.replace("+", "").replace("*", "").replace("?", "");
+            questionQueryDTO.setTag(tag);
+        }
+        /*添加首页按照最新、最热、零回复排序*/
+        for (SortEnum sortEnum : SortEnum.values()) {
+            if (sortEnum.name().toLowerCase().equals(sort)) {
+                questionQueryDTO.setSort(sort);
+
+                if (sortEnum == SortEnum.HOT7) {
+                    questionQueryDTO.setTime(System.currentTimeMillis() - 1000L * 60 * 60 * 24 * 7);
+                }
+                if (sortEnum == SortEnum.HOT30) {
+                    questionQueryDTO.setTime(System.currentTimeMillis() - 1000L * 60 * 60 * 24 * 30);
+                }
+                break;
+            }
+        }
+
         questionQueryDTO.setSearch(search);
         questionQueryDTO.setTag(tag);
         Integer totalCount = questionExtMapper.countBySearch(questionQueryDTO);
@@ -168,9 +199,17 @@ public class QuestionService {
         if (StringUtils.isBlank(questionDTO.getTag())) {
             return new ArrayList<>();
         }
+        String[] tags = StringUtils.split(questionDTO.getTag(), ",");
+        String regexpTag = Arrays
+                .stream(tags)
+                .filter(StringUtils::isNotBlank)
+                .map(t -> t.replace("+", "").replace("*", "").replace("?", ""))
+                .filter(StringUtils::isNotBlank)
+                .collect(Collectors.joining("|"));
         Question questionRelated = new Question();
         questionRelated.setId(questionDTO.getId());
-        questionRelated.setTag(StringUtils.replace(questionDTO.getTag(), ",", "|"));
+        questionRelated.setTag(regexpTag);
+
         List<Question> questionRelatedList = questionExtMapper.selectRelated(questionRelated);
         List<QuestionDTO> questionDTOList = questionRelatedList.stream().map(question -> {
             QuestionDTO questionDTO1 = new QuestionDTO();
